@@ -2,16 +2,19 @@ package ru.yandex.practicum.quiz.service;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.quiz.model.QuizLog;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.PrintWriter;
 import java.util.List;
 
 @Component
 public class ReportGenerator {
+
+    @Value("${spring-quiz.title:}")
+    private String quizTitle;
+
     public void generate(QuizLog quizLog) {
-        // Создаём объект PrintWriter, выводящий отчет в консоль
         try (PrintWriter writer = new PrintWriter(System.out)) {
-            // записываем отчет
             write(quizLog, writer);
         } catch (Exception exception) {
             System.out.println("При генерации отчёта произошла ошибка: " + exception.getMessage());
@@ -22,7 +25,7 @@ public class ReportGenerator {
         writer.println("Отчет о прохождении теста \"Тест по Spring Framework\".\n");
         for (QuizLog.Entry entry : quizLog) {
             // Записываем номер вопроса и текст вопроса
-            writer.println("Вопрос " + entry.getNumber() + ": " + entry.getQuestion().getText());
+            writer.println("Отчет о прохождении теста \"" + quizTitle + "\".\n");
 
             // Записываем варианты ответов
             List<String> options = entry.getQuestion().getOptions();
@@ -48,4 +51,3 @@ public class ReportGenerator {
         writer.printf("Всего вопросов: %d\nОтвечено правильно: %d\n", quizLog.total(), quizLog.successful());
     }
 }
-
